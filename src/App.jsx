@@ -1,13 +1,18 @@
 // Dependencies
+import { useState, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Components
-import { SearchParams } from './SearchParams';
-import DetailsErrorBoundary from './Details';
-import { useState } from 'react';
+// import { SearchParams } from './SearchParams';
+// import DetailsErrorBoundary from './Details';
+
+// React Context
 import { AdoptedPetContext } from './AdoptedPetContext';
+
+const DetailsErrorBoundary = lazy(() => import('./Details'));
+const SearchParams = lazy(() => import('./SearchParams'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,20 +34,28 @@ const App = () => {
       }}
     >
       <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <AdoptedPetContext.Provider value={adoptedPet}>
-            <header className="mb-10 w-full bg-gradient-to-b from-yellow-400 via-orange-500 to-red-500 p-7 text-center">
-              <Link className="text-6xl text-white hover:text-gray-200" to="/">
-                Adopt Me!
-              </Link>
-            </header>
-            <h1>Adopt Me!</h1>
-            <Routes>
-              <Route path="/details/:id" element={<DetailsErrorBoundary />} />
-              <Route path="/" element={<SearchParams />} />
-            </Routes>
-          </AdoptedPetContext.Provider>
-        </QueryClientProvider>
+        <AdoptedPetContext.Provider value={adoptedPet}>
+          <QueryClientProvider client={queryClient}>
+            <Suspense
+              fallback={
+                <div className="loading-pane">
+                  <h2 className="loader">🌀</h2>
+                </div>
+              }
+            >
+              <header className="mb-10 w-full bg-gradient-to-b from-yellow-400 via-orange-500 to-red-500 p-7 text-center">
+                <Link className="text-6xl text-white hover:text-gray-200" to="/">
+                  Adopt Me!
+                </Link>
+              </header>
+              <h1>Adopt Me!</h1>
+              <Routes>
+                <Route path="/details/:id" element={<DetailsErrorBoundary />} />
+                <Route path="/" element={<SearchParams />} />
+              </Routes>
+            </Suspense>
+          </QueryClientProvider>
+        </AdoptedPetContext.Provider>
       </BrowserRouter>
     </div>
   );

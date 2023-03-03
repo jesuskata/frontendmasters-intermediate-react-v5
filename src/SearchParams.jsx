@@ -15,7 +15,7 @@ import { AdoptedPetContext } from './AdoptedPetContext';
 // Constants
 const ANIMAL = ['dog', 'cat', 'bird', 'rabbit', 'reptile'];
 
-export const SearchParams = () => {
+const SearchParams = () => {
   const [requestParams, setRequestParams] = useState({
     location: '',
     animal: '',
@@ -97,3 +97,5 @@ export const SearchParams = () => {
     </div>
   );
 };
+
+export default SearchParams;
